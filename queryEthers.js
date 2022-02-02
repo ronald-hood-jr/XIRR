@@ -12,8 +12,10 @@ async function getCurrentVaultValue(vault) {
     const vaultAbi = './abis/vaultABI.json';
     const vaultContract = new ethers.Contract(vaultAddress, vaultAbi, provider);
     const totalAmountArray = await vaultContract.getTotalAmounts();
-    const totalOneTokenAmount = parseInt(ethers.utils.formatUnits(vault.amountsInverted ? totalAmountArray[1] : totalAmountArray[0], vault.decimals.oneToken));
-    const totalScarceTokenAmount = parseInt(ethers.utils.formatUnits(vault.amountsInverted ? totalAmountArray[0] : totalAmountArray[1], vault.decimals.scarceToken));
+    const unformattedTotalOneTokenAmount = vault.amountsInverted ? totalAmountArray[1] : totalAmountArray[0];
+    const unformattedTotalScarceTokenAmount = vault.amountsInverted ? totalAmountArray[0] : totalAmountArray[1];
+    const totalOneTokenAmount = parseInt(ethers.utils.formatUnits(unformattedTotalOneTokenAmount, vault.decimals.oneToken));
+    const totalScarceTokenAmount = parseInt(ethers.utils.formatUnits(unformattedTotalScarceTokenAmount, vault.decimals.scarceToken));
     //get Current Price
     const poolAddress = await vaultContract.pool();
     const poolAbi = './abis/poolABI.json';
