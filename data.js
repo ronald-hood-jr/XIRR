@@ -8,7 +8,7 @@ function parseData(name, data, vault) {
     //const withdrawal_transactions = new Map();
     //let distilledTransactions: distilledTransactionObject[]
     //let vault = new Vault(name)
-    for (let transactionType of [data.data, data.data.withdraws]) {
+    for (let transactionType of [data.data.deposits, data.data.withdraws]) {
         for (const transaction of transactionType) {
             const date = new Date(transaction.createdAtTimestamp * 1000);
             const oneTokenAmount = (vault.amountsInverted ? parseInt(transaction["amount1"]) : parseInt(transaction["amount0"]));
@@ -39,7 +39,8 @@ function parseData(name, data, vault) {
 }
 exports.parseData = parseData;
 function getPrice(name, isInverted, sqrtPrice) {
-    let price = univ3prices(config_1.decimalTracker[name], sqrtPrice).toSignificant({
+    let decimalArray = [config_1.decimalTracker[name].oneToken, config_1.decimalTracker[name].scarceToken];
+    let price = univ3prices(decimalArray, sqrtPrice).toSignificant({
         reverse: isInverted,
         decimalPlaces: 3
     });

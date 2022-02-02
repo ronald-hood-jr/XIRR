@@ -51,9 +51,9 @@ class Vault {
     this.amountsInverted = amountInversions[vaultName]
     this.decimals = decimalTracker[vaultName]
     this.isDepositToggle = true
-    parseData(this.vaultName,subgraph_query(this.vaultName,VAULTS.get(this.vaultName)),this)
+    subgraph_query(this.vaultName,VAULTS.get(this.vaultName),this)
     //getXIRR(this);
-    getAPR(this);
+    //getAPR(this);
   }
 
 }

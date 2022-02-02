@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Vault = exports.amountInversions = exports.decimalTracker = exports.tokensQuery = exports.ADDRESSES = exports.VAULTS = void 0;
-const data_1 = require("./data");
 const queryGraph_1 = require("./queryGraph");
 const VAULTS = new Map();
 exports.VAULTS = VAULTS;
@@ -56,9 +55,9 @@ class Vault {
         this.amountsInverted = amountInversions[vaultName];
         this.decimals = decimalTracker[vaultName];
         this.isDepositToggle = true;
-        (0, data_1.parseData)(this.vaultName, (0, queryGraph_1.subgraph_query)(this.vaultName, VAULTS.get(this.vaultName)), this);
+        (0, queryGraph_1.subgraph_query)(this.vaultName, VAULTS.get(this.vaultName), this);
         //getXIRR(this);
-        (0, data_1.getAPR)(this);
+        //getAPR(this);
     }
 }
 exports.Vault = Vault;

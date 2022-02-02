@@ -10,7 +10,7 @@ function parseData(name: string, data: pkg.ApolloQueryResult<any>, vault: Vault)
     //let distilledTransactions: distilledTransactionObject[]
     //let vault = new Vault(name)
 
-    for (let transactionType of [data.data, data.data.withdraws]) {
+    for (let transactionType of [data.data.deposits, data.data.withdraws]) {
 
         for (const transaction of transactionType) {
 
@@ -46,8 +46,8 @@ function parseData(name: string, data: pkg.ApolloQueryResult<any>, vault: Vault)
 }
 
 function getPrice(name: string, isInverted: boolean, sqrtPrice: number){
-    
-    let price = univ3prices(decimalTracker[name], sqrtPrice).toSignificant({
+    let decimalArray = [decimalTracker[name].oneToken,decimalTracker[name].scarceToken]
+    let price = univ3prices(decimalArray, sqrtPrice).toSignificant({
         reverse: isInverted,
         decimalPlaces: 3
     });
