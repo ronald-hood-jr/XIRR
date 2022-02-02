@@ -1,6 +1,7 @@
-import { VAULTS } from "./config";
-import { subgraph_query } from "./queryGraph";
+import { Vault, VAULTS } from "./config";
 
+var vaultHolder: Vault[]=[];
 for (const [name, endpoint] of VAULTS){
-    subgraph_query(name, endpoint)
+    vaultHolder.push(new Vault(name))
+    console.log(`T`)
 }

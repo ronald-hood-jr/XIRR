@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("./config");
-var vaultHolder = [];
+const queryGraph_1 = require("./queryGraph");
 for (const [name, endpoint] of config_1.VAULTS) {
-    vaultHolder.push(new config_1.Vault(name));
-    console.log(`T`);
+    (0, queryGraph_1.subgraph_query)(name, endpoint);
 }

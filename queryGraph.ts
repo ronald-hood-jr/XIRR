@@ -4,22 +4,26 @@ const { ApolloClient, InMemoryCache, gql }  = pkg;
 import { tokensQuery } from "./config";
 import {parseData} from "./data";
 
-function subgraph_query(name: string, endpoint: string){
-    var client = new ApolloClient({
-        uri: endpoint,
-        cache: new InMemoryCache(),
+function subgraph_query(name: string, endpoint: string): pkg.ApolloQueryResult<any>{
+  let returnData: pkg.ApolloQueryResult<any>;
+  var client = new ApolloClient({
+      uri: endpoint,
+      cache: new InMemoryCache(),
+    })
+    client
+      .query({
+        query: gql(tokensQuery),
       })
-      client
-        .query({
-          query: gql(tokensQuery),
+        .then((data) => {
+          
+          console.log(`Here is the data:`,JSON.stringify(data,null,2))
+          returnData = data
+          
         })
-          .then((data) => {
-            //console.log(JSON.stringify(data,null,2))
-            parseData(name, data)
+          .catch((err) => {
+          console.log('Error fetching data: ', err)
           })
-            .catch((err) => {
-            console.log('Error fetching data: ', err)
-            })
+  return(returnData)
 }
 
 export {subgraph_query}
