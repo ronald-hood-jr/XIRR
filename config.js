@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Vault = exports.amountInversions = exports.decimalTracker = exports.tokensQuery = exports.ADDRESSES = exports.VAULTS = void 0;
-const queryGraph_1 = require("./queryGraph");
+const data_1 = require("./data");
 const VAULTS = new Map();
 exports.VAULTS = VAULTS;
 VAULTS.set("ichi", "https://api.thegraph.com/subgraphs/name/ichi-org/ichi-vault");
@@ -44,9 +44,10 @@ class Vault {
     amountsInverted;
     decimals;
     isDepositToggle;
-    verboseTransactions;
-    distilledTransactions;
+    verboseTransactions = [];
+    distilledTransactions = [];
     currentVaultValue;
+    rawData;
     //XIRR: number
     APR;
     constructor(vaultName) {
@@ -55,9 +56,9 @@ class Vault {
         this.amountsInverted = amountInversions[vaultName];
         this.decimals = decimalTracker[vaultName];
         this.isDepositToggle = true;
-        (0, queryGraph_1.subgraph_query)(this.vaultName, VAULTS.get(this.vaultName), this);
+        console.log();
         //getXIRR(this);
-        //getAPR(this);
+        (0, data_1.getAPR)(this);
     }
 }
 exports.Vault = Vault;

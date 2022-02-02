@@ -31,10 +31,13 @@ function parseData(name, data, vault) {
         }
         vault.isDepositToggle = false;
     }
+    console.log('verbose data', vault.verboseTransactions);
     vault.verboseTransactions.sort(compare);
     for (const transaction of vault.verboseTransactions) {
+        console.log(`distilled transaction`, transaction);
         const dollarAmount = getDollarAmount(transaction);
-        vault.distilledTransactions.push({ 'amount': dollarAmount, 'when': transaction.date });
+        const holder = { 'amount': dollarAmount, 'when': transaction.date };
+        vault.distilledTransactions.push(holder);
     }
 }
 exports.parseData = parseData;
@@ -76,7 +79,7 @@ function getAPR(vault) {
     const currentVaultValue = vault.currentVaultValue;
     const numTransactions = transactions.length;
     const millisecondsToYears = 1000 * 60 * 60 * 24 * 365;
-    const vaultTimeYears = (transactions[0].when.getTime() - transactions[numTransactions - 1].when.getTime()) / millisecondsToYears;
+    const vaultTimeYears = (transactions[numTransactions - 1].when.getTime() - transactions[0].when.getTime()) / millisecondsToYears;
     for (let transaction of transactions) {
         let amount = transaction.amount;
         amount < 0 ? deposits += amount : withdrawals += amount;

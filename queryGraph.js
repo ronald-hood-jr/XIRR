@@ -5,9 +5,8 @@ const pkg = require("@apollo/client");
 require("cross-fetch/dist/node-polyfill.js");
 const { ApolloClient, InMemoryCache, gql } = pkg;
 const config_1 = require("./config");
-const data_1 = require("./data");
-function subgraph_query(name, endpoint, vault) {
-    let returnData;
+async function subgraph_query(endpoint) {
+    //pkg.ApolloQueryResult<any>;
     var client = new ApolloClient({
         uri: endpoint,
         cache: new InMemoryCache(),
@@ -17,13 +16,12 @@ function subgraph_query(name, endpoint, vault) {
         query: gql(config_1.tokensQuery),
     })
         .then((data) => {
-        (0, data_1.parseData)(name, data, vault);
         console.log(`Here is the data:`, JSON.stringify(data, null, 2));
-        returnData = data;
+        return (data);
     })
         .catch((err) => {
         console.log('Error fetching data: ', err);
+        return (err);
     });
-    return (returnData);
 }
 exports.subgraph_query = subgraph_query;

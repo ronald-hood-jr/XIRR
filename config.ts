@@ -1,5 +1,7 @@
 import { parseData, getAPR } from './data'
 import { subgraph_query } from './queryGraph'
+import * as pkg from '@apollo/client';
+
 const VAULTS = new Map()
 VAULTS.set("ichi","https://api.thegraph.com/subgraphs/name/ichi-org/ichi-vault")
 VAULTS.set("fuse","https://api.thegraph.com/subgraphs/name/ichi-org/fuse-vault")
@@ -40,9 +42,10 @@ class Vault {
   amountsInverted: boolean
   decimals: decimalsObject
   isDepositToggle: boolean
-  verboseTransactions: verboseTransactionObject[]
-  distilledTransactions: distilledTransactionObject[]
+  verboseTransactions: verboseTransactionObject[] = []
+  distilledTransactions: distilledTransactionObject[] = []
   currentVaultValue: number
+  rawData: pkg.ApolloQueryResult<any>
   //XIRR: number
   APR: number
   constructor(vaultName) {
@@ -51,9 +54,9 @@ class Vault {
     this.amountsInverted = amountInversions[vaultName]
     this.decimals = decimalTracker[vaultName]
     this.isDepositToggle = true
-    subgraph_query(this.vaultName,VAULTS.get(this.vaultName),this)
+    console.log()
     //getXIRR(this);
-    //getAPR(this);
+    getAPR(this);
   }
 
 }
