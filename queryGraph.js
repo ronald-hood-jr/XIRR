@@ -5,8 +5,7 @@ const pkg = require("@apollo/client");
 require("cross-fetch/dist/node-polyfill.js");
 const { ApolloClient, InMemoryCache, gql } = pkg;
 const config_1 = require("./config");
-async function subgraph_query(endpoint) {
-    //pkg.ApolloQueryResult<any>;
+function subgraph_query(endpoint) {
     var client = new ApolloClient({
         uri: endpoint,
         cache: new InMemoryCache(),

@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Vault = exports.amountInversions = exports.decimalTracker = exports.tokensQuery = exports.ADDRESSES = exports.VAULTS = void 0;
-const data_1 = require("./data");
+exports.amountInversions = exports.decimalTracker = exports.tokensQuery = exports.ADDRESSES = exports.VAULTS = void 0;
 const VAULTS = new Map();
 exports.VAULTS = VAULTS;
 VAULTS.set("ichi", "https://api.thegraph.com/subgraphs/name/ichi-org/ichi-vault");
@@ -38,31 +37,6 @@ const tokensQuery = `
   }
   `;
 exports.tokensQuery = tokensQuery;
-class Vault {
-    vaultName;
-    vaultAddress;
-    amountsInverted;
-    decimals;
-    isDepositToggle;
-    verboseTransactions = [];
-    distilledTransactions = [];
-    currentVaultValue;
-    rawData;
-    //XIRR: number
-    APR;
-    constructor(vaultName) {
-        this.vaultName = vaultName;
-        this.vaultAddress = VAULTS.get[vaultName];
-        this.amountsInverted = amountInversions[vaultName];
-        this.decimals = decimalTracker[vaultName];
-        this.isDepositToggle = true;
-        console.log();
-        //getXIRR(this);
-        (0, data_1.getAPR)(this);
-    }
-}
-exports.Vault = Vault;
-// @TODO FIX!!!!!!!!
 let decimalTracker = {
     "ichi": { oneToken: 18, scarceToken: 9 },
     "fuse": { oneToken: 18, scarceToken: 18 },

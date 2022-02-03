@@ -1,12 +1,9 @@
 import * as pkg from '@apollo/client';
-import { ApolloQueryResult } from '@apollo/client';
 import 'cross-fetch/dist/node-polyfill.js';
 const { ApolloClient, InMemoryCache, gql }  = pkg;
-import { tokensQuery, Vault } from "./config";
-import { parseData } from "./data";
+import { tokensQuery } from "./config";
 
-async function subgraph_query(endpoint: string): Promise<pkg.ApolloQueryResult<any>>{
-  //pkg.ApolloQueryResult<any>;
+function subgraph_query(endpoint: string): Promise<pkg.ApolloQueryResult<any>> | any{
   var client = new ApolloClient({
       uri: endpoint,
       cache: new InMemoryCache(),
@@ -23,7 +20,6 @@ async function subgraph_query(endpoint: string): Promise<pkg.ApolloQueryResult<a
         console.log('Error fetching data: ', err)
         return(err)
       })
-  
 }
 
 export {subgraph_query}
