@@ -1,7 +1,6 @@
-import { decimalTracker, VAULTS, amountInversions } from './config'
+import { decimalTracker, amountInversions, ADDRESSES } from './config'
 import * as pkg from '@apollo/client';
 import 'cross-fetch/dist/node-polyfill.js';
-import { subgraph_query } from './queryGraph';
 import { getCurrentVaultValue } from './queryEthers';
 import { getDistilledTransactions, getVerboseTransactions } from './data';
 
@@ -19,26 +18,32 @@ class Vault {
     currentVaultValue: number
     APR: number
 
-    constructor(vaultName: string, vaultEndpoint: string) {
+    constructor(vaultName: string, vaultEndpoint: string, data: pkg.ApolloQueryResult<any>) {
         this.vaultName = vaultName
         this.vaultEndpoint = vaultEndpoint
-        this.vaultAddress = VAULTS.get[vaultName]
+        this.vaultAddress = ADDRESSES.get(vaultName)
         this.amountsInverted = amountInversions[vaultName]
         this.decimals = decimalTracker[vaultName]
         this.isDepositToggle = true
-        this.rawData = subgraph_query(this.vaultEndpoint)
-        this.verboseTransactions = getVerboseTransactions(this.vaultName, this.rawData, this.amountsInverted)
+        this.rawData = data
+        this.verboseTransactions = getVerboseTransactions(this.vaultName, 
+          this.rawData, this.amountsInverted, this.decimals.scarceToken)
         this.distilledTransactions = getDistilledTransactions(this.verboseTransactions)
-        getCurrentVaultValue(this.vaultName, this.vaultAddress, this.amountsInverted, this.decimals.oneToken, this.decimals.scarceToken)
-            .then((value: number) => {
-                this.currentVaultValue = value
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+    }
+
+    public async calcCurrentValue() {
+      let value = await getCurrentVaultValue(
+        this.vaultName, 
+        this.vaultAddress, 
+        this.amountsInverted, 
+        this.decimals.oneToken, 
+        this.decimals.scarceToken);
+
+      console.log(value)  
+      this.currentVaultValue = value;
     }
     
-    getAPR() {
+    public async getAPR() {
         let deposits = 0;
         let withdrawals = 0
         const transactions = this.distilledTransactions
@@ -48,12 +53,17 @@ class Vault {
         const vaultTimeYears = (transactions[numTransactions - 1].when.getTime() - transactions[0].when.getTime()) / millisecondsToYears
 
         for (let transaction of transactions) {
+            //console.log(transaction)
             let amount = transaction.amount
             amount < 0 ? deposits += amount : withdrawals += amount
         }
+
+        //console.log(deposits)
+        //console.log(withdrawals)
+        //console.log(currentVaultValue)
     
-        this.APR = ((withdrawals + currentVaultValue) / deposits * 100 - 100) / vaultTimeYears
-        console.log(`The APR of the ${name} vault is: ${this.APR}`)
+        this.APR = ((withdrawals + currentVaultValue) / (-deposits) * 100 - 100) / vaultTimeYears
+        console.log(`The APR of the ${this.vaultName} vault is: ${this.APR}`)
     }
 
 }

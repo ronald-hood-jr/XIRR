@@ -4,11 +4,11 @@ VAULTS.set("fuse","https://api.thegraph.com/subgraphs/name/ichi-org/fuse-vault")
 VAULTS.set("wing","https://api.thegraph.com/subgraphs/name/ichi-org/wing-vault")
 VAULTS.set("fox","https://api.thegraph.com/subgraphs/name/ichi-org/fox-vault")
 
-const ADDRESSES = new Map([
-  ["ichi", "0xfaeCcee632912c42a7c88c3544885A8D455408FA"],
-  ["fuse", "0x3A4411a33CfeF8BC01f23ED7518208aA38cca824"],
-  ["wing", "0x2a8E09552782563f7A076ccec0Ff39473B91Cd8F"],
-  ["fox", "0x779F9BAd1f4B1Ef5198AD9361DBf3791F9e0D596"]])
+const ADDRESSES = new Map()
+ADDRESSES.set("ichi", "0xfaeCcee632912c42a7c88c3544885A8D455408FA")
+ADDRESSES.set("fuse", "0x3A4411a33CfeF8BC01f23ED7518208aA38cca824")
+ADDRESSES.set("wing", "0x2a8E09552782563f7A076ccec0Ff39473B91Cd8F")
+ADDRESSES.set("fox", "0x779F9BAd1f4B1Ef5198AD9361DBf3791F9e0D596")
 
 const tokensQuery = `
   query {

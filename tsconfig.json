@@ -1,8 +1,21 @@
 {
     "compilerOptions": {
-        "target": "esnext",
-        "watch": true,
-        "lib": ["dom", "es2017"],
-        "module": "commonjs"
-    }
+        "module": "CommonJS",
+        "target": "ES2019",
+        "noImplicitAny": false,
+        "outDir": "./dist",
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "resolveJsonModule": true
+    },
+    "include": [
+        "./src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }
+  
