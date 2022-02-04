@@ -1,9 +1,8 @@
 import * as pkg from '@apollo/client';
 import 'cross-fetch/dist/node-polyfill.js';
 const { ApolloClient, InMemoryCache, gql }  = pkg;
-import { tokensQuery } from "./config";
 
-async function subgraph_query(endpoint: string) {
+async function subgraph_query(endpoint: string, page: number, tokensQuery) {
   var client = new ApolloClient({
       uri: endpoint,
       cache: new InMemoryCache(),
@@ -11,6 +10,10 @@ async function subgraph_query(endpoint: string) {
     return await client
       .query({
         query: gql(tokensQuery),
+        variables: {
+          first: 1,
+          skip: (page-1)*1,
+        },
       })
 }
 

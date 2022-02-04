@@ -10,9 +10,10 @@ ADDRESSES.set("fuse", "0x3A4411a33CfeF8BC01f23ED7518208aA38cca824")
 ADDRESSES.set("wing", "0x2a8E09552782563f7A076ccec0Ff39473B91Cd8F")
 ADDRESSES.set("fox", "0x779F9BAd1f4B1Ef5198AD9361DBf3791F9e0D596")
 
-const tokensQuery = `
-  query {
-    deposits (orderBy: createdAtTimestamp, orderDirection: desc) {
+//query($first: Int, $orderBy: BigInt, $orderDirection: String)
+const depositTokensQuery = `
+  query($first: Int, $skip:Int) {
+    deposits (first: $first, skip: $skip, orderBy: createdAtTimestamp, orderDirection: desc) {
       id
       amount0
       amount1
@@ -21,7 +22,12 @@ const tokensQuery = `
       totalAmount0
       totalAmount1
     }
-    withdraws (orderBy: createdAtTimestamp, orderDirection: desc) {
+  }
+  `
+
+  const withdrawalTokensQuery = `
+  query($first: Int, $skip:Int) {
+    withdraws (first: $first, skip: $skip, orderBy: createdAtTimestamp, orderDirection: desc) {
       id
       amount0
       amount1
@@ -48,4 +54,4 @@ let amountInversions = {
   'fox': false
 }
   
-export {VAULTS, ADDRESSES, tokensQuery, decimalTracker, amountInversions}
+export {VAULTS, ADDRESSES, depositTokensQuery, withdrawalTokensQuery, decimalTracker, amountInversions}

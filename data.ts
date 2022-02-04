@@ -1,19 +1,29 @@
 import * as pkg from '@apollo/client';
 import { BigNumber } from 'ethers';
+import { dataPacket } from 'index';
 import { compare, getPrice, getDollarAmount, BNtoNumberWithoutDecimals } from './utils';
 import { distilledTransactionObject, verboseTransactionObject } from './vault'
 
 
 function getVerboseTransactions(
     name: string, 
-    data: pkg.ApolloQueryResult<any>, 
+    dataPackets: dataPacket[], 
     amountsInverted: boolean,
     decimals: number): verboseTransactionObject[] {
 
-    let isDeposit = true;
+    let transactionsType: string;
+    let isDeposit: boolean;
     let verboseTransactions: verboseTransactionObject[] = []
-    for (let transactionType of [data.data.deposits, data.data.withdraws]) {
-        for (const transaction of transactionType) {
+    let packetData: any[];
+    for (let packet of dataPackets) {
+        if (packet.type == 'deposit') {
+            isDeposit = true;
+            packetData = packet.data.data['deposits']
+        } else {
+            isDeposit = false
+            packetData = packet.data.data['withdraws']
+        }
+        for (const transaction of packetData) {
 
             const date = new Date(transaction.createdAtTimestamp * 1000)
             const oneTokenAmount = 
@@ -28,7 +38,7 @@ function getVerboseTransactions(
                 (amountsInverted ? BNtoNumberWithoutDecimals(transaction["totalAmount1"], 18) : BNtoNumberWithoutDecimals(transaction["totalAmount0"], 18))
             const scarceTokenTotalAmount = 
                 (amountsInverted ? BNtoNumberWithoutDecimals(transaction["totalAmount0"], decimals) : BNtoNumberWithoutDecimals(transaction["totalAmount1"], decimals))
-            const type = isDeposit ? 'deposit' : 'withdrawal'
+            const type = packet.type
 
             let holder: verboseTransactionObject = {
                 'date': date,
@@ -53,7 +63,7 @@ function getDistilledTransactions(verboseTransactions: verboseTransactionObject[
     let distilledTransactions: distilledTransactionObject[] = []
     for (const transaction of verboseTransactions) {
         let dollarAmount = getDollarAmount(transaction);
-        if (transaction.type == 'deposit') {
+        if (transaction.type == 'withdrawal') {
             dollarAmount = -dollarAmount;
         }
         const holder:distilledTransactionObject = {'amount':dollarAmount, 'when':transaction.date}

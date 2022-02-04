@@ -3,6 +3,7 @@ import * as pkg from '@apollo/client';
 import 'cross-fetch/dist/node-polyfill.js';
 import { getCurrentVaultValue } from './queryEthers';
 import { getDistilledTransactions, getVerboseTransactions } from './data';
+import { dataPacket } from 'index';
 
 class Vault {
 
@@ -12,22 +13,22 @@ class Vault {
     amountsInverted: boolean
     decimals: decimalsObject
     isDepositToggle: boolean
-    rawData: pkg.ApolloQueryResult<any>
+    dataPackets: dataPacket[]
     verboseTransactions: verboseTransactionObject[] = []
     distilledTransactions: distilledTransactionObject[] = []
     currentVaultValue: number
     APR: number
 
-    constructor(vaultName: string, vaultEndpoint: string, data: pkg.ApolloQueryResult<any>) {
+    constructor(vaultName: string, vaultEndpoint: string, data: dataPacket[]) {
         this.vaultName = vaultName
         this.vaultEndpoint = vaultEndpoint
         this.vaultAddress = ADDRESSES.get(vaultName)
         this.amountsInverted = amountInversions[vaultName]
         this.decimals = decimalTracker[vaultName]
         this.isDepositToggle = true
-        this.rawData = data
+        this.dataPackets = data
         this.verboseTransactions = getVerboseTransactions(this.vaultName, 
-          this.rawData, this.amountsInverted, this.decimals.scarceToken)
+          this.dataPackets, this.amountsInverted, this.decimals.scarceToken)
         this.distilledTransactions = getDistilledTransactions(this.verboseTransactions)
     }
 
