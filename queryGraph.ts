@@ -11,8 +11,8 @@ async function subgraph_query(endpoint: string, page: number, tokensQuery) {
       .query({
         query: gql(tokensQuery),
         variables: {
-          first: 1,
-          skip: (page-1)*1,
+          first: 10,
+          skip: (page-1)*10,
         },
       })
 }

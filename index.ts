@@ -39,8 +39,10 @@ import * as fs from 'fs'
 
         await vault.calcCurrentValue()
         await vault.getAPR()
-        vaultHolder.push(vault)
         writeDataToDisk(vaultName, vault.distilledTransactions, vault.currentVaultValue)
+        await vault.getIRR()
+        vaultHolder.push(vault)
+        
     }
 })();
 
@@ -64,10 +66,7 @@ function writeDataToDisk(name: string, data: distilledTransactionObject[],curren
         csvContent += row + "\r\n";
     });
 
-    fs.writeFile('./prints/'+name+'.csv',csvContent/*JSON.stringify(googleDateData, null, 2)*/, (err) => {
-    if (err) throw err; 
-    console.log('The file has been saved!');
-    });
+    fs.writeFileSync('./prints/'+name+'.csv',csvContent);
 }
 
 type dataPacket = {

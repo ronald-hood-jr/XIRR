@@ -3,9 +3,6 @@ import { getPrice } from './utils';
 import vaultABI from './abis/vaultABI.json';
 import poolABI from './abis/poolABI.json';
 
-//INFURA_KEY - 260f81fe952b4020b805e772f0488f81
-//https://mainnet.infura.io/v3/260f81fe952b4020b805e772f0488f81
-
 async function getCurrentVaultValue(vaultName:string, vaultAddress: string, amountsInverted: boolean, oneTokenDecimals:number, scarceTokenDecimals:number): Promise<number>{
     
     //get Current Balance

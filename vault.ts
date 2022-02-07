@@ -4,7 +4,7 @@ import 'cross-fetch/dist/node-polyfill.js';
 import { getCurrentVaultValue } from './queryEthers';
 import { getDistilledTransactions, getVerboseTransactions } from './data';
 import { dataPacket } from 'index';
-
+import xirr from 'xirr'
 class Vault {
 
     vaultName: string
@@ -28,7 +28,7 @@ class Vault {
         this.isDepositToggle = true
         this.dataPackets = data
         this.verboseTransactions = getVerboseTransactions(this.vaultName, 
-          this.dataPackets, this.amountsInverted, this.decimals.scarceToken)
+        this.dataPackets, this.amountsInverted, this.decimals.scarceToken)
         this.distilledTransactions = getDistilledTransactions(this.verboseTransactions)
     }
 
@@ -66,6 +66,13 @@ class Vault {
         this.APR = ((withdrawals + currentVaultValue) / (-deposits) * 100 - 100) / vaultTimeYears
         console.log(`The APR of the ${this.vaultName} vault is: ${this.APR}`)
     }
+  
+  public async getIRR() {
+    let xirrObjArray = this.distilledTransactions
+    xirrObjArray.push({amount:this.currentVaultValue, when: new Date(Date.now())})
+    let irr = xirr(xirrObjArray,{ guess: -0.9975 })
+    console.log(`The IRR of the ${this.vaultName} vault is: `,irr)
+  }
 
 }
 

@@ -63,7 +63,7 @@ function getDistilledTransactions(verboseTransactions: verboseTransactionObject[
     let distilledTransactions: distilledTransactionObject[] = []
     for (const transaction of verboseTransactions) {
         let dollarAmount = getDollarAmount(transaction);
-        if (transaction.type == 'withdrawal') {
+        if (transaction.type == 'deposit') {
             dollarAmount = -dollarAmount;
         }
         const holder:distilledTransactionObject = {'amount':dollarAmount, 'when':transaction.date}
