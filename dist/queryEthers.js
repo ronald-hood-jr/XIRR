@@ -27,8 +27,6 @@ const ethers = __importStar(require("ethers"));
 const utils_1 = require("./utils");
 const vaultABI_json_1 = __importDefault(require("./abis/vaultABI.json"));
 const poolABI_json_1 = __importDefault(require("./abis/poolABI.json"));
-//INFURA_KEY - 260f81fe952b4020b805e772f0488f81
-//https://mainnet.infura.io/v3/260f81fe952b4020b805e772f0488f81
 async function getCurrentVaultValue(vaultName, vaultAddress, amountsInverted, oneTokenDecimals, scarceTokenDecimals) {
     //get Current Balance
     const RPC_HOST = `https://mainnet.infura.io/v3/260f81fe952b4020b805e772f0488f81`;

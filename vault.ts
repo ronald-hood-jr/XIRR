@@ -70,7 +70,7 @@ class Vault {
   public async getIRR() {
     let xirrObjArray = this.distilledTransactions
     xirrObjArray.push({amount:this.currentVaultValue, when: new Date(Date.now())})
-    let irr = xirr(xirrObjArray,{ guess: -0.9975 })
+    let irr = xirr(xirrObjArray,{ guess: -0.999999975 })
     console.log(`The IRR of the ${this.vaultName} vault is: `,irr)
   }
 

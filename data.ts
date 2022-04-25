@@ -15,6 +15,8 @@ function getVerboseTransactions(
     let isDeposit: boolean;
     let verboseTransactions: verboseTransactionObject[] = []
     let packetData: any[];
+    
+    const unique_users = new Map()
     for (let packet of dataPackets) {
         if (packet.type == 'deposit') {
             isDeposit = true;
@@ -24,7 +26,8 @@ function getVerboseTransactions(
             packetData = packet.data.data['withdraws']
         }
         for (const transaction of packetData) {
-
+            
+            unique_users.set(transaction['sender'],unique_users.size)
             const date = new Date(transaction.createdAtTimestamp * 1000)
             const oneTokenAmount = 
                 (amountsInverted ? BNtoNumberWithoutDecimals(transaction["amount1"], 18) : BNtoNumberWithoutDecimals(transaction["amount0"], 18))
@@ -54,7 +57,7 @@ function getVerboseTransactions(
         }
         isDeposit = false
     }
-
+    console.log(`The number of unique users for the ${name} vault is ${unique_users.size}`)
     verboseTransactions.sort(compare)
     return verboseTransactions
 }

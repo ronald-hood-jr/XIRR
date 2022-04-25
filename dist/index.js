@@ -26,19 +26,56 @@ const fs = __importStar(require("fs"));
 (async () => {
     var vaultHolder = [];
     for (const [vaultName, vaultEndpoint] of config_1.VAULTS) {
-        let data = await (0, queryGraph_1.subgraph_query)(vaultEndpoint);
-        writeDataToDisk(vaultName, data);
-        let vault = new vault_1.Vault(vaultName, vaultEndpoint, data);
+        let dataPackets = [];
+        let endOfDepositData = false;
+        let endOfWithdrawalData = false;
+        let depositPage = 1;
+        let withdrawalPage = 1;
+        while (!endOfDepositData) {
+            let rawData = await (0, queryGraph_1.subgraph_query)(vaultEndpoint, depositPage, config_1.depositTokensQuery);
+            if (rawData.data['deposits'].length < 1) {
+                endOfDepositData = true;
+            }
+            else {
+                dataPackets.push({ data: rawData, type: 'deposit' });
+                depositPage++;
+            }
+        }
+        while (!endOfWithdrawalData) {
+            let rawData = await (0, queryGraph_1.subgraph_query)(vaultEndpoint, withdrawalPage, config_1.withdrawalTokensQuery);
+            if (rawData['data']['withdraws'].length < 1) {
+                endOfWithdrawalData = true;
+            }
+            else {
+                dataPackets.push({ data: rawData, type: 'withdrawal' });
+                withdrawalPage++;
+            }
+        }
+        let vault = new vault_1.Vault(vaultName, vaultEndpoint, dataPackets);
         await vault.calcCurrentValue();
         await vault.getAPR();
+        writeDataToDisk(vaultName, vault.distilledTransactions, vault.currentVaultValue);
+        await vault.getIRR();
         vaultHolder.push(vault);
     }
 })();
-function writeDataToDisk(name, data) {
-    fs.writeFile('./prints/' + name + '.json', JSON.stringify(data, null, 2), (err) => {
-        if (err)
-            throw err;
-        console.log('The file has been saved!');
+function writeDataToDisk(name, data, currentVaultValue) {
+    let googleDateData = [];
+    let currentTime = new Date(Date.now());
+    let currentTimeString = currentTime.getFullYear() + '/' + (1 + currentTime.getMonth()) + '/' + currentTime.getDate();
+    for (let datum of data) {
+        googleDateData.push({ amount: datum.amount * -1, when: datum.when.getFullYear() + "/" + (datum.when.getMonth() + 1) + '/' + datum.when.getDate() });
+    }
+    googleDateData.push({ amount: currentVaultValue, when: currentTimeString });
+    let csvData = [];
+    for (let obj of googleDateData) {
+        csvData.push([obj.amount, obj.when]);
+    }
+    let csvContent = "data:text/csv;charset=utf-8\r\namount,when\n";
+    csvData.forEach(function (rowArray) {
+        let row = rowArray.join(",");
+        csvContent += row + "\r\n";
     });
+    fs.writeFileSync('./prints/' + name + '.csv', csvContent);
 }
 //# sourceMappingURL=index.js.map

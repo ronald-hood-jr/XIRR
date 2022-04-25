@@ -20,6 +20,8 @@ function parseData(name: string, data: pkg.ApolloQueryResult<any>){
         
         deposit_transactions.set(new Date(date.getUTCFullYear(), 
         date.getUTCMonth(), date.getUTCDate()), holder)
+        
+        
 }
   
     for(let withdrawal of data.data.withdraws){
@@ -35,11 +37,13 @@ function parseData(name: string, data: pkg.ApolloQueryResult<any>){
         holder.set("totalAmount1", parseInt(withdrawal["totalAmount1"]))
         
         
+        
 
         withdrawal_transactions.set(new Date(date.getUTCFullYear(), 
         date.getUTCMonth(), date.getUTCDate()), holder)
     }
-
+    
+    
     writeData(name, deposit_transactions, withdrawal_transactions)
 }
 

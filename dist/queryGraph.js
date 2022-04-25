@@ -23,15 +23,18 @@ exports.subgraph_query = void 0;
 const pkg = __importStar(require("@apollo/client"));
 require("cross-fetch/dist/node-polyfill.js");
 const { ApolloClient, InMemoryCache, gql } = pkg;
-const config_1 = require("./config");
-async function subgraph_query(endpoint) {
+async function subgraph_query(endpoint, page, tokensQuery) {
     var client = new ApolloClient({
         uri: endpoint,
         cache: new InMemoryCache(),
     });
     return await client
         .query({
-        query: gql(config_1.tokensQuery),
+        query: gql(tokensQuery),
+        variables: {
+            first: 10,
+            skip: (page - 1) * 10,
+        },
     });
 }
 exports.subgraph_query = subgraph_query;

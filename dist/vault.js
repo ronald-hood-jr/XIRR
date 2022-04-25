@@ -1,10 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Vault = void 0;
 const config_1 = require("./config");
 require("cross-fetch/dist/node-polyfill.js");
 const queryEthers_1 = require("./queryEthers");
 const data_1 = require("./data");
+const xirr_1 = __importDefault(require("xirr"));
 class Vault {
     constructor(vaultName, vaultEndpoint, data) {
         this.verboseTransactions = [];
@@ -15,8 +19,8 @@ class Vault {
         this.amountsInverted = config_1.amountInversions[vaultName];
         this.decimals = config_1.decimalTracker[vaultName];
         this.isDepositToggle = true;
-        this.rawData = data;
-        this.verboseTransactions = (0, data_1.getVerboseTransactions)(this.vaultName, this.rawData, this.amountsInverted, this.decimals.scarceToken);
+        this.dataPackets = data;
+        this.verboseTransactions = (0, data_1.getVerboseTransactions)(this.vaultName, this.dataPackets, this.amountsInverted, this.decimals.scarceToken);
         this.distilledTransactions = (0, data_1.getDistilledTransactions)(this.verboseTransactions);
     }
     async calcCurrentValue() {
@@ -42,6 +46,12 @@ class Vault {
         //console.log(currentVaultValue)
         this.APR = ((withdrawals + currentVaultValue) / (-deposits) * 100 - 100) / vaultTimeYears;
         console.log(`The APR of the ${this.vaultName} vault is: ${this.APR}`);
+    }
+    async getIRR() {
+        let xirrObjArray = this.distilledTransactions;
+        xirrObjArray.push({ amount: this.currentVaultValue, when: new Date(Date.now()) });
+        let irr = (0, xirr_1.default)(xirrObjArray, { guess: -0.9975 });
+        console.log(`The IRR of the ${this.vaultName} vault is: `, irr);
     }
 }
 exports.Vault = Vault;

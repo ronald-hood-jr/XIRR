@@ -20,6 +20,7 @@
     "xirr": "^1.1.0"
   },
   "devDependencies": {
+    "@types/node": "^17.0.18",
     "@types/react": "^17.0.38",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
